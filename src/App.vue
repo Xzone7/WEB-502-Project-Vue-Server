@@ -1,20 +1,18 @@
 <script setup>
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from "vue-router";
+import ChromeHeaerVue from "./components/ChromeHeaer.vue";
 
 const router = useRouter();
 
 const redirect = () => {
-  router.push('/cart');
-}
+  router.push("/cart");
+};
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
+    <ChromeHeaerVue />
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <div @click="redirect">Click</div>
@@ -26,5 +24,4 @@ const redirect = () => {
 </template>
 
 <style scoped>
-
 </style>
