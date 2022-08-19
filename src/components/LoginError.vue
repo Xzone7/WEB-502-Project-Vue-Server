@@ -1,12 +1,13 @@
 <script setup>
+import { store } from "../store/store"
 defineProps({
-  onClose: Function
+  onClose: Function,
 });
 </script>
 
 <template>
   <div className="login-err-wrap">
-    <div className="login-err-container">Incorrect username or password.</div>
+    <div className="login-err-container">{{ store.error }}</div>
     <div>
       <button className="err-button" @click="onClose">X</button>
     </div>
@@ -25,6 +26,7 @@ defineProps({
   border-color: rgba(27, 31, 35, 0.15);
   color: #86181d;
   display: flex;
+  max-width: 360px;
 }
 .login-err-container {
   max-width: 980px;

@@ -1,13 +1,38 @@
 <script setup>
-import { RouterLink, RouterView, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
+import { store } from "../store/store";
+import axios from "axios";
+
+const router = useRouter();
+
+const onClickSignInorOut = () => {
+  if (store.isLoggedIn) {
+    axios
+    .get("http://localhost:1024/logout", { withCredentials: true })
+    .finally(() => {
+      store.setLoggedInState(0);
+      router.push("/");
+    });
+  } else {
+    router.push("/");
+  }
+}
+
+const goToCart = () => {
+  router.push("/cart");
+};
+
+const goToCheckout = () => {
+
+}
 </script>
 
 <template>
   <header>
     <nav>
       <ul>
-        <li>Sign in</li>
-        <li>Cart</li>
+        <li @click="onClickSignInorOut">{{ store.isLoggedIn ? "Sign out" : "Sign in" }}</li>
+        <li @click="goToCart">Cart</li>
         <li>Checkout</li>
       </ul>
     </nav>
@@ -15,7 +40,7 @@ import { RouterLink, RouterView, useRouter } from "vue-router";
 </template>
 
 <style scoped>
-header{
+header {
   height: 64px;
 }
 

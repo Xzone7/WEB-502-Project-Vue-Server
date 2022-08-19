@@ -1,7 +1,7 @@
 <script setup>
-import { onBeforeMount } from 'vue';
-import { useRouter } from 'vue-router'
-import axios from 'axios';
+import { onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 
@@ -15,7 +15,6 @@ const router = useRouter();
 //     });
 // });
 </script>
-
 
 <template>
   <div class="about">
