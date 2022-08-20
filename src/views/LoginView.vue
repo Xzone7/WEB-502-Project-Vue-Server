@@ -5,6 +5,7 @@ import { store } from "../store/store";
 import axios from "axios";
 import LoginErrorVue from "../components/LoginError.vue";
 import LoginIconVue from "../components/LoginIcon.vue";
+import LoggedInAlertVue from "../components/LoggedInAlert.vue";
 
 const router = useRouter();
 const state = reactive({
@@ -33,13 +34,20 @@ const handleSubmit = (event) => {
       },
       { withCredentials: true }
     )
-    .then(() => {
-      store.setLoggedInState(1);
+    .then((res) => {
+      console.log(res);
+      store.setUserState({
+        isLoggedIn: 1,
+        username: res.data.payload.username,
+      });
       router.push("/cart");
     })
     .catch(() => {
       store.setError("Incorrect username or password.");
-      store.setLoggedInState(0);
+      store.setUserState({
+        isLoggedIn: 0,
+        username: "",
+      });
     });
 };
 
@@ -57,14 +65,14 @@ const onClose = () => {
 </script>
 
 <template>
-  <div v-if="store.isLoggedIn">You logged In</div>
-  <div className="login-page-home" v-else>
+  <div className="login-page-home">
     <div className="img-display">
       <LoginIconVue />
     </div>
     <h1 className="login-header">Sign in to cart and checkout</h1>
     <LoginErrorVue v-show="store.error" :onClose="onClose" />
-    <div className="form">
+    <LoggedInAlertVue v-if="store.user.isLoggedIn" />
+    <div className="form" v-else>
       <form className="login-form" @submit="handleSubmit">
         <div>
           <input
@@ -96,7 +104,7 @@ const onClose = () => {
           <p @click="handleForgetPsw">Forgot password?</p>
         </div>
         <div className="message" v-show="state.showModal">
-          Try username: today, password: yyyy/mm/dd
+          Try username: paul, password: paul
         </div>
       </form>
     </div>

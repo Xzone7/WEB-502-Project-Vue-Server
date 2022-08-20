@@ -6,32 +6,35 @@ import axios from "axios";
 const router = useRouter();
 
 const onClickSignInorOut = () => {
-  if (store.isLoggedIn) {
+  if (store.user.isLoggedIn) {
     axios
-    .get("http://localhost:1024/logout", { withCredentials: true })
-    .finally(() => {
-      store.setLoggedInState(0);
-      router.push("/");
-    });
+      .get("http://localhost:1024/logout", { withCredentials: true })
+      .finally(() => {
+        store.setUserState({
+          isLoggedIn: 0,
+          username: "",
+        });
+        router.push("/");
+      });
   } else {
     router.push("/");
   }
-}
+};
 
 const goToCart = () => {
   router.push("/cart");
 };
 
-const goToCheckout = () => {
-
-}
+const goToCheckout = () => {};
 </script>
 
 <template>
   <header>
     <nav>
       <ul>
-        <li @click="onClickSignInorOut">{{ store.isLoggedIn ? "Sign out" : "Sign in" }}</li>
+        <li @click="onClickSignInorOut">
+          {{ store.user.isLoggedIn ? "Sign out" : "Sign in" }}
+        </li>
         <li @click="goToCart">Cart</li>
         <li>Checkout</li>
       </ul>
