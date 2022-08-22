@@ -9,7 +9,7 @@ const checkisLoggedIn = (to, from, next) => {
       username: ""
     });
     store.setAlert({ error: "You need to sign in first" });
-    next.push("/");
+    next("/");
   }
   next();
 };

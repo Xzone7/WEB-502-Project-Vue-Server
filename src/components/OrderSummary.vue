@@ -1,10 +1,10 @@
 <script setup>
 import { currency, pluralize } from "../store/utils";
-import axios from "axios";
 
 defineProps({
   orderSummary: Object,
-  tryToCheckout: Function
+  tryToCheckout: Function,
+  isCartEmpty: Boolean
 });
 </script>
 
@@ -34,7 +34,7 @@ defineProps({
       <div>Est. total</div>
       <div>{{ currency(orderSummary.total) }}</div>
     </div>
-    <div class="checkout-button">
+    <div class="checkout-button" v-if="!isCartEmpty">
       <button @click="tryToCheckout">Begin checkout</button>
     </div>
   </div>

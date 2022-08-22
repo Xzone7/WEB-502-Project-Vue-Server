@@ -167,6 +167,7 @@ const tryToCheckout = () => {
         <OrderSummary
           :orderSummary="state.orderSummary"
           :tryToCheckout="tryToCheckout"
+          :isCartEmpty="state.cartItems.length === 0"
         />
       </div>
     </div>
