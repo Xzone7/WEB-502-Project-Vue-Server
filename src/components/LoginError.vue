@@ -6,16 +6,19 @@ defineProps({
 </script>
 
 <template>
-  <div className="login-err-wrap">
-    <div className="login-err-container">{{ store.error }}</div>
+  <div :class="store.alert.error ? 'login-err-wrap' : 'register-err-wrap'">
+    <div class="login-err-container">
+      {{ store.alert.error || store.alert.success }}
+    </div>
     <div>
-      <button className="err-button" @click="onClose">X</button>
+      <button class="err-button" @click="onClose">X</button>
     </div>
   </div>
 </template>
 
 <style scoped>
-.login-err-wrap {
+.login-err-wrap,
+.register-err-wrap {
   border-radius: 5px;
   border-style: solid;
   border-width: 1px;
@@ -27,6 +30,10 @@ defineProps({
   color: #86181d;
   display: flex;
   max-width: 360px;
+}
+.register-err-wrap {
+  background-color: #4bb543 !important;
+  color: white;
 }
 .login-err-container {
   max-width: 980px;

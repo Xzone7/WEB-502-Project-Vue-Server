@@ -3,8 +3,8 @@ import { store } from "../store/store";
 </script>
 
 <template>
-  <div className="login-alert-wrap">
-    <div className="login-alert-container">
+  <div class="login-alert-wrap">
+    <div class="login-alert-container">
       {{ `${store.user.username}, you have signed in` }}
     </div>
   </div>

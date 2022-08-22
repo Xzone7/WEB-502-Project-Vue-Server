@@ -6,7 +6,10 @@ export const store = reactive({
     username: Cookies.get("username"),
     isLoggedIn: !!+Cookies.get("isLoggedIn")
   },
-  error: "",
+  alert: {
+    error: "",
+    success: ""
+  },
   setUserState(userState) {
     Cookies.set("isLoggedIn", userState.isLoggedIn);
     Cookies.set("username", userState.username);
@@ -15,7 +18,10 @@ export const store = reactive({
       isLoggedIn: !!+userState.isLoggedIn
     };
   },
-  setError(msg) {
-    this.error = msg;
+  setAlert(alert) {
+    this.alert = {
+      ...this.alert,
+      ...alert
+    };
   }
 });

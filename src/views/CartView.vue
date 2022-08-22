@@ -19,6 +19,10 @@ onMounted(() => {
     .then((res) => {
       state.cartItems = res.data.payload.lineItems;
       state.orderSummary = res.data.payload.orderSummary;
+      store.setAlert({
+        error: "",
+        success: ""
+      });
     })
     .catch((err) => {
       if (err.response.status === 401) {
@@ -26,7 +30,7 @@ onMounted(() => {
           isLoggedIn: 0,
           username: ""
         });
-        store.setError("You need to sign in first");
+        store.setAlert({ error: "You need to sign in first" });
         router.push("/");
       }
     });
@@ -38,6 +42,10 @@ const addToCart = () => {
     .then((res) => {
       state.cartItems = res.data.payload.lineItems;
       state.orderSummary = res.data.payload.orderSummary;
+      store.setAlert({
+        error: "",
+        success: ""
+      });
     })
     .catch((err) => {
       if (err.response.status === 401) {
@@ -45,7 +53,7 @@ const addToCart = () => {
           isLoggedIn: 0,
           username: ""
         });
-        store.setError("You need to sign in first");
+        store.setAlert({ error: "You need to sign in first" });
         router.push("/");
       }
     });
@@ -61,6 +69,10 @@ const deleteCartItem = (itemNumber) => {
     .then((res) => {
       state.cartItems = res.data.payload.lineItems;
       state.orderSummary = res.data.payload.orderSummary;
+      store.setAlert({
+        error: "",
+        success: ""
+      });
     })
     .catch((err) => {
       if (err.response.status === 401) {
@@ -68,7 +80,7 @@ const deleteCartItem = (itemNumber) => {
           isLoggedIn: 0,
           username: ""
         });
-        store.setError("You need to sign in first");
+        store.setAlert({ error: "You need to sign in first" });
         router.push("/");
       }
     });
@@ -84,6 +96,10 @@ const updateQuantity = (itemNumber, quantity) => {
     .then((res) => {
       state.cartItems = res.data.payload.lineItems;
       state.orderSummary = res.data.payload.orderSummary;
+      store.setAlert({
+        error: "",
+        success: ""
+      });
     })
     .catch((err) => {
       if (err.response.status === 401) {
@@ -91,7 +107,31 @@ const updateQuantity = (itemNumber, quantity) => {
           isLoggedIn: 0,
           username: ""
         });
-        store.setError("You need to sign in first");
+        store.setAlert({ error: "You need to sign in first" });
+        router.push("/");
+      }
+    });
+};
+
+const tryToCheckout = () => {
+  axios
+    .post("http://localhost:1024/checkout", {}, { withCredentials: true })
+    .then((res) => {
+      state.cartItems = res.data.payload.lineItems;
+      state.orderSummary = res.data.payload.orderSummary;
+      store.setAlert({
+        error: "",
+        success: ""
+      });
+      router.push("/checkout");
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        store.setUserState({
+          isLoggedIn: 0,
+          username: ""
+        });
+        store.setAlert({ error: "You need to sign in first" });
         router.push("/");
       }
     });
@@ -100,32 +140,50 @@ const updateQuantity = (itemNumber, quantity) => {
 
 <template>
   <div class="cart">
-    <div class="left-col">
-      <h1 class="cart-header">Shopping Cart</h1>
-      <CartItemVue
-        v-for="(item, index) in state.cartItems"
-        :item="item"
-        :index="index"
-        :key="item.id"
-        :onRemove="deleteCartItem"
-        :onUpdate="updateQuantity"
-      />
-      <button class="random" @click="addToCart">
-        Add random item into cart
-      </button>
-    </div>
-    <div class="right-col">
-      <h1 class="cart-header">Summary</h1>
-      <OrderSummary :orderSummary="state.orderSummary" />
+    <h2 class="welcome" v-if="store.user.isLoggedIn">
+      {{ `Welcome, ${store.user.username}` }}
+    </h2>
+    <div class="cart-wrapper">
+      <div class="left-col">
+        <h1 class="cart-header">Shopping Cart</h1>
+        <div class="empty-cart" v-if="state.cartItems.length === 0">
+          <h2>Your cart is empty</h2>
+          <p>Sign in with other account or add random item into cart</p>
+        </div>
+        <CartItemVue
+          v-for="(item, index) in state.cartItems"
+          :item="item"
+          :index="index"
+          :key="item.id"
+          :onRemove="deleteCartItem"
+          :onUpdate="updateQuantity"
+        />
+        <button class="random" @click="addToCart">
+          Add random item into cart
+        </button>
+      </div>
+      <div class="right-col">
+        <h1 class="cart-header">Summary</h1>
+        <OrderSummary
+          :orderSummary="state.orderSummary"
+          :tryToCheckout="tryToCheckout"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .cart {
+  padding-top: 1rem;
+}
+.cart-wrapper {
   display: flex;
   justify-content: space-between;
-  padding-top: 1rem;
+}
+.welcome {
+  font-family: "Silkscreen", cursive;
+  text-align: center;
 }
 .left-col {
   width: 70%;
@@ -151,5 +209,8 @@ const updateQuantity = (itemNumber, quantity) => {
 }
 .random:hover {
   background-color: rgb(0, 124, 176);
+}
+.empty-cart {
+  margin-top: 1rem;
 }
 </style>

@@ -1,11 +1,12 @@
 <script setup>
-import { onMounted, reactive, computed } from "vue";
+import { reactive, computed } from "vue";
 import { useRouter } from "vue-router";
 import { store } from "../store/store";
 import axios from "axios";
 import LoginErrorVue from "../components/LoginError.vue";
 import LoginIconVue from "../components/LoginIcon.vue";
 import LoggedInAlertVue from "../components/LoggedInAlert.vue";
+import RegisterFormVue from "../components/RegisterForm.vue";
 
 const router = useRouter();
 const state = reactive({
@@ -13,15 +14,19 @@ const state = reactive({
   password: "",
   isHidden: true,
   showModal: false,
+  showRegister: false,
   setIsHidden(hide) {
     this.isHidden = hide;
   },
   setShowModal(showModal) {
     this.showModal = showModal;
+  },
+  setShowRegister(show) {
+    this.showRegister = show;
   }
 });
 
-const isDisabled = computed(() => !state.username && !state.password);
+const isDisabled = computed(() => !state.username || !state.password);
 
 const handleSubmit = (event) => {
   event.preventDefault();
@@ -39,10 +44,14 @@ const handleSubmit = (event) => {
         isLoggedIn: 1,
         username: res.data.payload.username
       });
+      store.setAlert({
+        error: "",
+        success: ""
+      });
       router.push("/cart");
     })
     .catch(() => {
-      store.setError("Incorrect username or password.");
+      store.setAlert({ error: "Incorrect username or password." });
       store.setUserState({
         isLoggedIn: 0,
         username: ""
@@ -58,54 +67,73 @@ const handleForgetPsw = () => {
   state.setShowModal(!state.showModal);
 };
 
+const handleShowRegister = (show) => {
+  store.setAlert({
+    error: ""
+  });
+  state.setShowRegister(show);
+};
+
 const onClose = () => {
-  store.setError("");
+  store.setAlert({
+    error: "",
+    success: ""
+  });
 };
 </script>
 
 <template>
-  <div className="login-page-home">
-    <div className="img-display">
+  <div class="login-page-home">
+    <div class="img-display">
       <LoginIconVue />
     </div>
-    <h1 className="login-header">Sign in to cart and checkout</h1>
-    <LoginErrorVue v-show="store.error" :onClose="onClose" />
+    <h1 class="login-header">Sign in to cart and checkout</h1>
+    <LoginErrorVue
+      v-show="store.alert.error || store.alert.success"
+      :onClose="onClose"
+    />
     <LoggedInAlertVue v-if="store.user.isLoggedIn" />
-    <div className="form" v-else>
-      <form className="login-form" @submit="handleSubmit">
-        <div>
-          <input
-            type="text"
-            placeholder="username"
-            v-model="state.username"
-            autocomplete="username"
-          />
-          <input
-            :type="state.isHidden ? 'password' : 'text'"
-            placeholder="password"
-            v-model="state.password"
-            autocomplete="current-password"
-          />
-          <i
-            :className="state.isHidden ? 'fa fa-eye' : 'fa fa-eye-slash'"
-            @click="handlePasswordHidden"
-          />
-        </div>
-        <button
-          :class="isDisabled && 'disabled'"
-          type="submit"
-          value="Submit"
-          :disabled="isDisabled"
-        >
-          login
-        </button>
-        <div className="message">
-          <p @click="handleForgetPsw">Forgot password?</p>
-        </div>
-        <div className="message" v-show="state.showModal">
-          Try username: paul, password: paul
-        </div>
-      </form>
+    <div class="form-container" v-else>
+      <RegisterFormVue v-if="state.showRegister" :cancel="handleShowRegister" />
+      <div class="form" v-else>
+        <form class="login-form" @submit="handleSubmit">
+          <div>
+            <input
+              type="text"
+              placeholder="username"
+              v-model="state.username"
+              autocomplete="username"
+            />
+            <input
+              :type="state.isHidden ? 'password' : 'text'"
+              placeholder="password"
+              v-model="state.password"
+              autocomplete="current-password"
+            />
+            <i
+              :class="state.isHidden ? 'fa fa-eye' : 'fa fa-eye-slash'"
+              @click="handlePasswordHidden"
+            />
+          </div>
+          <button
+            :class="isDisabled && 'disabled'"
+            type="submit"
+            value="Submit"
+            :disabled="isDisabled"
+          >
+            login
+          </button>
+          <div class="message">
+            <span @click="handleForgetPsw">Forgot password?</span>
+          </div>
+          <div class="message" v-show="state.showModal">
+            Try username: paul, password: paul
+          </div>
+          <div class="message">
+            <span @click="() => handleShowRegister(true)">Sign up</span>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -155,8 +183,7 @@ h1 {
   box-sizing: border-box;
   font-size: 14px;
 }
-.form button,
-.logout-page button {
+.form button {
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
@@ -190,7 +217,7 @@ h1 {
   font-size: 12px;
 }
 
-.form .message p {
+.form .message span {
   color: #4caf50;
   text-decoration: none;
   cursor: pointer;
@@ -202,26 +229,5 @@ h1 {
   margin-top: 15px;
   position: relative;
   z-index: 2;
-}
-
-.footer {
-  display: flex !important;
-  list-style: none !important;
-  justify-content: center !important;
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 0;
-  font-size: 12px;
-}
-
-.footer li {
-  margin-left: 16px;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.footer li a {
-  color: #0366d6;
-  text-decoration: none;
 }
 </style>

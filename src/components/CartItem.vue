@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { currency } from "../store/utils";
 
 const props = defineProps({
@@ -11,6 +11,10 @@ const props = defineProps({
 
 const state = reactive({
   qty: props.item.quantity
+});
+
+watch(props, (currentValue) => {
+  state.qty = currentValue.item.quantity;
 });
 </script>
 

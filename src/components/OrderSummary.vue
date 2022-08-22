@@ -1,8 +1,10 @@
 <script setup>
 import { currency, pluralize } from "../store/utils";
+import axios from "axios";
 
 defineProps({
-  orderSummary: Object
+  orderSummary: Object,
+  tryToCheckout: Function
 });
 </script>
 
@@ -33,7 +35,7 @@ defineProps({
       <div>{{ currency(orderSummary.total) }}</div>
     </div>
     <div class="checkout-button">
-      <button>Begin checkout</button>
+      <button @click="tryToCheckout">Begin checkout</button>
     </div>
   </div>
 </template>

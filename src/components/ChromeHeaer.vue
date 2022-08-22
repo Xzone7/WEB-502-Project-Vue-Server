@@ -25,7 +25,9 @@ const goToCart = () => {
   router.push("/cart");
 };
 
-const goToCheckout = () => {};
+const goToCheckout = () => {
+  router.push("/checkout");
+};
 </script>
 
 <template>
@@ -36,7 +38,7 @@ const goToCheckout = () => {};
           {{ store.user.isLoggedIn ? "Sign out" : "Sign in" }}
         </li>
         <li @click="goToCart">Cart</li>
-        <li>Checkout</li>
+        <li @click="goToCheckout">Checkout</li>
       </ul>
     </nav>
   </header>
@@ -66,7 +68,7 @@ ul {
 }
 
 li {
-  width: 100px;
+  width: 150px;
   text-align: center;
   cursor: pointer;
   color: white;
