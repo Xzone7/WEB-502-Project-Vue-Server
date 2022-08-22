@@ -1,6 +1,8 @@
 <script setup>
+import { currency, pluralize } from "../store/utils";
+
 defineProps({
-  orderSummary: Object,
+  orderSummary: Object
 });
 </script>
 
@@ -8,20 +10,27 @@ defineProps({
   <div class="order-summary">
     <h2 class="header">Total</h2>
     <div class="subtotal">
-      <div>Subtotal (2 items)</div>
-      <div>$50.13</div>
+      <div>
+        {{
+          `Subtotal (${orderSummary.itemCount} ${pluralize(
+            "item",
+            orderSummary.itemCount
+          )})`
+        }}
+      </div>
+      <div class="price">{{ currency(orderSummary.subtotal) }}</div>
     </div>
     <div class="shipping">
       <div>Est. shipping costs</div>
-      <div>$4.66</div>
+      <div class="price">{{ currency(orderSummary.shippingCost) }}</div>
     </div>
     <div class="tax">
       <div>Sales tax</div>
-      <div>$13</div>
+      <div class="price">{{ currency(orderSummary.tax) }}</div>
     </div>
     <div class="total">
       <div>Est. total</div>
-      <div>$57.9</div>
+      <div>{{ currency(orderSummary.total) }}</div>
     </div>
     <div class="checkout-button">
       <button>Begin checkout</button>
@@ -63,6 +72,10 @@ defineProps({
 }
 .total div {
   font-weight: 700;
+}
+
+.price {
+  font-weight: 600;
 }
 
 .checkout-button {

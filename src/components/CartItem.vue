@@ -1,7 +1,16 @@
 <script setup>
-defineProps({
+import { reactive } from "vue";
+import { currency } from "../store/utils";
+
+const props = defineProps({
   item: Object,
   index: Number,
+  onRemove: Function,
+  onUpdate: Function
+});
+
+const state = reactive({
+  qty: props.item.quantity
 });
 </script>
 
@@ -9,28 +18,39 @@ defineProps({
   <div :class="index === 0 ? 'cart-item-container-tt' : 'cart-item-container'">
     <div class="product-wrapper">
       <div class="product-image">
-        <img
-          src="https://scene7.samsclub.com/is/image/samsclub/0007874228838_A?wid=200&hei=200"
-          alt="product"
-        />
+        <img :src="item.imageUrl" alt="product" />
       </div>
       <div class="product-info">
         <div class="product-name">
-          Member's Mark Ultra Soup/Salad Paper Bowls (20 oz., 150 ct.)
+          {{ item.productName }}
         </div>
-        <div class="item-number">Item 980089707</div>
+        <div class="item-number">{{ `Item ${item.itemNumber}` }}</div>
         <div class="shipping-label">Free shipping for <span>Plus</span></div>
       </div>
       <div class="product-quantity">
-        <select name="quantity" class="quantity">
-          <option value="">1</option>
-          <option value="">2</option>
+        <select
+          name="quantity"
+          class="quantity"
+          v-model="state.qty"
+          @change="() => onUpdate(item.itemNumber, state.qty)"
+        >
+          <option
+            v-for="quantity in item.quantity"
+            :value="quantity"
+            :selected="quantity === item.quantity"
+          >
+            {{ quantity }}
+          </option>
+          <option :value="item.quantity + 1">{{ item.quantity + 1 }}</option>
+          <option :value="item.quantity + 2">{{ item.quantity + 2 }}</option>
         </select>
       </div>
-      <div class="product-price">$12.92</div>
+      <div class="product-price">
+        {{ currency(item.price * item.quantity) }}
+      </div>
     </div>
     <div class="action">
-      <button>Remove</button>
+      <button @click="() => onRemove(item.itemNumber)">Remove</button>
     </div>
   </div>
 </template>

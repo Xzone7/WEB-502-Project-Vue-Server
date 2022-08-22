@@ -18,7 +18,7 @@ const state = reactive({
   },
   setShowModal(showModal) {
     this.showModal = showModal;
-  },
+  }
 });
 
 const isDisabled = computed(() => !state.username && !state.password);
@@ -30,15 +30,14 @@ const handleSubmit = (event) => {
       "http://localhost:1024/login",
       {
         username: state.username,
-        password: state.password,
+        password: state.password
       },
       { withCredentials: true }
     )
     .then((res) => {
-      console.log(res);
       store.setUserState({
         isLoggedIn: 1,
-        username: res.data.payload.username,
+        username: res.data.payload.username
       });
       router.push("/cart");
     })
@@ -46,7 +45,7 @@ const handleSubmit = (event) => {
       store.setError("Incorrect username or password.");
       store.setUserState({
         isLoggedIn: 0,
-        username: "",
+        username: ""
       });
     });
 };

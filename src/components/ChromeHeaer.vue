@@ -12,7 +12,7 @@ const onClickSignInorOut = () => {
       .finally(() => {
         store.setUserState({
           isLoggedIn: 0,
-          username: "",
+          username: ""
         });
         router.push("/");
       });

@@ -9,24 +9,93 @@ import OrderSummary from "../components/OrderSummary.vue";
 const router = useRouter();
 
 const state = reactive({
-  cartItems: [1, 2],
+  cartItems: [],
+  orderSummary: {}
 });
 
 onMounted(() => {
   axios
     .get("http://localhost:1024/cart", { withCredentials: true })
-    .then(() => {})
+    .then((res) => {
+      state.cartItems = res.data.payload.lineItems;
+      state.orderSummary = res.data.payload.orderSummary;
+    })
     .catch((err) => {
       if (err.response.status === 401) {
         store.setUserState({
           isLoggedIn: 0,
-          username: "",
+          username: ""
         });
         store.setError("You need to sign in first");
         router.push("/");
       }
     });
 });
+
+const addToCart = () => {
+  axios
+    .get("http://localhost:1024/addLineItem", { withCredentials: true })
+    .then((res) => {
+      state.cartItems = res.data.payload.lineItems;
+      state.orderSummary = res.data.payload.orderSummary;
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        store.setUserState({
+          isLoggedIn: 0,
+          username: ""
+        });
+        store.setError("You need to sign in first");
+        router.push("/");
+      }
+    });
+};
+
+const deleteCartItem = (itemNumber) => {
+  axios
+    .post(
+      "http://localhost:1024/deleteLineItem",
+      { itemNumber },
+      { withCredentials: true }
+    )
+    .then((res) => {
+      state.cartItems = res.data.payload.lineItems;
+      state.orderSummary = res.data.payload.orderSummary;
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        store.setUserState({
+          isLoggedIn: 0,
+          username: ""
+        });
+        store.setError("You need to sign in first");
+        router.push("/");
+      }
+    });
+};
+
+const updateQuantity = (itemNumber, quantity) => {
+  axios
+    .post(
+      "http://localhost:1024/updateLineItem",
+      { itemNumber, quantity },
+      { withCredentials: true }
+    )
+    .then((res) => {
+      state.cartItems = res.data.payload.lineItems;
+      state.orderSummary = res.data.payload.orderSummary;
+    })
+    .catch((err) => {
+      if (err.response.status === 401) {
+        store.setUserState({
+          isLoggedIn: 0,
+          username: ""
+        });
+        store.setError("You need to sign in first");
+        router.push("/");
+      }
+    });
+};
 </script>
 
 <template>
@@ -38,12 +107,16 @@ onMounted(() => {
         :item="item"
         :index="index"
         :key="item.id"
+        :onRemove="deleteCartItem"
+        :onUpdate="updateQuantity"
       />
-      <button class="random">Add random item into cart</button>
+      <button class="random" @click="addToCart">
+        Add random item into cart
+      </button>
     </div>
     <div class="right-col">
       <h1 class="cart-header">Summary</h1>
-      <OrderSummary />
+      <OrderSummary :orderSummary="state.orderSummary" />
     </div>
   </div>
 </template>

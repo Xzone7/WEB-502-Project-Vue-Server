@@ -1,7 +1,7 @@
 <script setup>
 import { store } from "../store/store";
 defineProps({
-  onClose: Function,
+  onClose: Function
 });
 </script>
 

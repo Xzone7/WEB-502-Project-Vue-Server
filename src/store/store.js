@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 export const store = reactive({
   user: {
     username: Cookies.get("username"),
-    isLoggedIn: !!+Cookies.get("isLoggedIn"),
+    isLoggedIn: !!+Cookies.get("isLoggedIn")
   },
   error: "",
   setUserState(userState) {
@@ -12,10 +12,10 @@ export const store = reactive({
     Cookies.set("username", userState.username);
     this.user = {
       username: userState.username,
-      isLoggedIn: !!+userState.isLoggedIn,
+      isLoggedIn: !!+userState.isLoggedIn
     };
   },
   setError(msg) {
     this.error = msg;
-  },
+  }
 });
